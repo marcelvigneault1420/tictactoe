@@ -1,7 +1,6 @@
 var connected = false;
 var socket = null;
-var clientInfo = null;
-var yourTurn = false;
+var playerInfo = null;
 
 document.querySelector('#game_container').style.visibility = 'hidden';
 
@@ -9,7 +8,11 @@ let cases = document.querySelectorAll('.case');
 for (i = 0; i < cases.length; i++) {
     cases[i].addEventListener('click', function(e) {
         if (connected) {
-            socket.emit('sendaction');
+            socket.emit('sendaction', {
+                case: e.currentTarget.id.substring(4),
+                type: playerInfo.type,
+                roomName: playerInfo.roomName
+            });
         }
     });
 }
@@ -17,18 +20,16 @@ for (i = 0; i < cases.length; i++) {
 function connectIO() {
     if (!connected) {
         socket = io();
-        socket.on('connected', function(client) {
-            clientInfo = client;
+        socket.on('gamestart', function(player) {
+            playerInfo = player.info;
 
-            if (clientInfo.yourTurn) {
+            if (playerInfo.yourTurn) {
                 document.querySelector('#info').innerHTML = 'Play !';
             } else {
                 document.querySelector('#info').innerHTML =
                     'Waiting for other player !';
             }
-        });
-        socket.on('newboard', function(gameobj) {
-            refreshboard(gameobj);
+            refreshboard(player.board);
         });
         document.querySelector('#connect_button').innerHTML = 'Disconnect';
         connected = true;
@@ -42,8 +43,8 @@ function connectIO() {
     }
 }
 
-function refreshboard(game) {
+function refreshboard(board) {
     for (var i = 0; i < 9; ++i) {
-        document.querySelector(`#case${i + 1}`).innerHTML = game.board[i];
+        document.querySelector(`#case${i}`).innerHTML = board[i];
     }
 }
