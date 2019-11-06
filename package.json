@@ -1,0 +1,38 @@
+{
+    "name": "tictactoe",
+    "version": "1.0.0",
+    "description": "A tic tac toe game",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node app.js",
+        "server": "nodemon run server"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/marcelvigneault1420/tictactoe.git"
+    },
+    "keywords": [
+        "tictactoe",
+        "tic",
+        "tac",
+        "toe",
+        "socket",
+        "socketio",
+        "game"
+    ],
+    "author": "Marcel Vigneault <marcel.vigneault.1420@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/marcelvigneault1420/tictactoe/issues"
+    },
+    "homepage": "https://github.com/marcelvigneault1420/tictactoe#readme",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "socket.io": "^2.3.0"
+    },
+    "devDependencies": {
+        "nodemon": "^1.19.4"
+    }
+}
