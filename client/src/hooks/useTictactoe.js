@@ -1,60 +1,51 @@
 import { useReducer, useEffect } from 'react';
+import reducer, { initialState } from './tictactoeReducer';
 import io from 'socket.io-client';
 
-const initialState = {
-    socket: null,
-    play: false,
-    won: 'no',
-    score: 0,
-    board: ['', '', '', '', '', '', '', '', ''],
-    type: ''
-};
-
-const reducer = (state, action) => {
-    console.log('enter', action);
-    switch (action.type) {
-        case 'connect':
-            console.log('Connect');
-            return {
-                ...state,
-                play: true,
-                won: 'no',
-                board: ['', '', '', '', '', '', '', '', ''],
-                type: 'X',
-                socket: action.payload
-            };
-        case 'make_move':
-            if (state.play) {
-                return {
-                    ...state,
-                    board: [
-                        ...state.board.slice(0, action.payload),
-                        ...state.type,
-                        ...state.board.slice(action.payload + 1)
-                    ],
-                    play: false
-                };
-            }
-        default:
-            return state;
-    }
-};
-
-const useTicTacToe = url => {
+const useTicTacToe = (url, name) => {
     const [game, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
-        console.log('CONNECT');
-        dispatch({ type: 'connect', payload: url });
+        console.log('INIT REDUCER');
+        let canceled = false;
+
+        dispatch({ type: 'TRY_CONNECT' });
+        const socket = io(url, {
+            query: `name=${name}`
+        });
+
+        socket.on('connected', success => {
+            if (success && !canceled) {
+                dispatch({ type: 'CONNECTED', payload: socket });
+            }
+        });
+
+        socket.on('game_found', game => {
+            if (!canceled) {
+                dispatch({ type: 'JOIN_GAME', payload: { game, socket } });
+            }
+        });
+
+        socket.on('refresh', game => {
+            if (!canceled) {
+                dispatch({ type: 'REFRESH', payload: game });
+            }
+        });
+
         return () => {
-            dispatch({ type: 'disconnect' });
+            canceled = true;
+            if (socket !== null) socket.disconnect();
         };
     }, []);
 
-    const make_move = tile => {
-        dispatch({ type: 'make_move', payload: tile });
-    };
-    return { make_move, game };
+    function play_turn(tile) {
+        if (game.socket !== null) {
+            game.socket.emit('play_turn', { tile });
+            dispatch({ type: 'PLAY_TURN', payload: tile });
+        }
+    }
+
+    return { play_turn, game };
 };
 
 export default useTicTacToe;

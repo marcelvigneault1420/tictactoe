@@ -9,19 +9,20 @@ function Game() {
     //         soc.disconnect();
     //     };
     // }, []);
-    const { make_move, game } = useTTT('localhost');
+    const { play_turn, game } = useTTT('localhost:4001', 'Marcel Vigneault');
 
     console.log('REFRESH');
     var rows = new Array(9).fill(0).map((zero, index) => (
-        <button key={index} onClick={() => make_move(index)}>
+        <button key={index} onClick={() => play_turn(index)}>
             {index}
         </button>
     ));
 
     return (
         <div>
-            <p>{rows}</p>
-            <p>{JSON.stringify(game)}</p>
+            {game.gameState == 0 && <p>Connecting...</p>}
+            {game.gameState == 1 && <p>Searching for a game...</p>}
+            {game.gameState == 2 && <p>{rows}</p>}
         </div>
     );
 }

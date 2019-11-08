@@ -1,11 +1,19 @@
 module.exports = function handlersMaker(socket) {
     const handleDisconnect = () => {
-        console.log(`user ${socket.id} disconnected`);
+        console.log(
+            `DISCONNECT. SocketID: ${socket.id}, name: ${socket.username}`
+        );
     };
 
-    const handleMakeMove = moveObj => {
-        console.log(moveObj);
+    const handlePlayTurn = turn => {
+        console.log(turn);
     };
 
-    return { handleDisconnect, handleMakeMove };
+    const handlePlayerEntered = name => {
+        console.log(`${name} want to join a room with socketID ${socket.id}`);
+
+        socket.emit('game_found', { yourTurn: true, type: 'X' });
+    };
+
+    return { handleDisconnect, handlePlayTurn, handlePlayerEntered };
 };
