@@ -1,1 +1,1 @@
-export const SERVER_URL = 'localhost:4001';
+export const SERVER_URL = 'http://games.charlesvigneault.com/tictactoe';
