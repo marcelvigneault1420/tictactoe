@@ -40,7 +40,7 @@ const useTicTacToe = (url, name) => {
 
     function play_turn(tile) {
         if (game.socket !== null) {
-            game.socket.emit('play_turn', { tile });
+            game.socket.emit('play_turn', { tile, type: game.type });
             dispatch({ type: 'PLAY_TURN', payload: tile });
         }
     }

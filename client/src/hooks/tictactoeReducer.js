@@ -1,44 +1,44 @@
 export const initialState = {
     socket: null,
     yourTurn: false,
-    won: 'no',
     score: 0,
     board: ['', '', '', '', '', '', '', '', ''],
     type: '',
-    gameState: 0
+    gameState: 0,
+    winStatus: 0
 };
 
 const reducer = (state, action) => {
     switch (action.type) {
         case 'CONNECTED':
-            if (state.gameState < 1) {
-                return {
-                    ...initialState,
-                    gameState: 1,
-                    socket: action.payload
-                };
-            } else {
-                return state;
-            }
+            return {
+                ...initialState,
+                gameState: 1,
+                socket: action.payload
+            };
         case 'JOIN_GAME':
+            let { game, socket } = action.payload;
+
             return {
                 ...state,
-                socket: action.payload.socket,
-                yourTurn: action.payload.game.yourTurn,
-                won: 'no',
+                socket: socket,
+                yourTurn: game.yourTurn,
                 score: 0,
                 board: ['', '', '', '', '', '', '', '', ''],
-                type: action.payload.game.type,
+                type: game.type,
                 gameState: 2
             };
         case 'REFRESH':
+            let gameState = action.payload;
+
             return {
                 ...state,
-                yourTurn: action.payload.yourTurn,
-                won: action.payload.won,
-                score: action.payload.score,
-                board: action.payload.board,
-                type: action.payload.type
+                yourTurn: gameState.yourTurn,
+                won: gameState.won,
+                score: gameState.score,
+                board: gameState.board,
+                winStatus: gameState.winStatus,
+                type: gameState.type
             };
         case 'PLAY_TURN':
             if (state.yourTurn) {

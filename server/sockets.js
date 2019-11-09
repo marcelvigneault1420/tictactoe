@@ -13,16 +13,12 @@ var socketServer = server => {
             `CONNECTION. SocketID: ${socket.id}, name: ${socket.username}`
         );
 
-        setTimeout(() => {
-            socket.emit('connected', true);
-        }, 1000);
-
         handlers = handlersMaker(socket);
 
-        socket.on('disconnect', handlers.handleDisconnect);
         socket.on('play_turn', handlers.handlePlayTurn);
+        socket.on('disconnect', handlers.handleDisconnect);
 
-        handlers.handlePlayerEntered(socket.username);
+        handlers.handlePlayerJoinQueue(socket.username);
     });
 };
 
