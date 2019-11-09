@@ -1,13 +1,28 @@
 import React, { useState } from 'react';
 import Game from './Game';
+import Login from './Login';
 
 function Main() {
-    const [inGame, setInGame] = useState(false);
+    const [gameState, setGameState] = useState(0);
+    const [name, setName] = useState('');
 
+    const joinHandler = e => {
+        e.preventDefault();
+        setGameState(1);
+    };
     return (
         <div>
-            <button onClick={() => setInGame(old => !old)}>Play</button>
-            {inGame && <Game setInGame={setInGame} />}
+            {gameState <= 0 && (
+                <Login
+                    name={name}
+                    setName={setName}
+                    joinHandler={joinHandler}
+                    gameState={gameState}
+                />
+            )}
+            {gameState === 1 && (
+                <Game setGameState={setGameState} name={name} />
+            )}
         </div>
     );
 }

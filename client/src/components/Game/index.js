@@ -3,14 +3,15 @@ import useTTT from '../../hooks/useTictactoe';
 import TicTacToe from './TicTacToe';
 import Connecting from './Connecting';
 import Searching from './Searching';
-function Game({ setInGame }) {
+import { SERVER_URL } from './../../config';
+function Game({ setGameState, name }) {
     const { playTurnHandler, game, findSomeoneElseHandler } = useTTT(
-        'localhost:4001',
-        'Marcel Vigneault'
+        SERVER_URL,
+        name
     );
 
     if (game.gameState === -1) {
-        setInGame(false);
+        setGameState(-1);
     }
 
     return (

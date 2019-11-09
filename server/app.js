@@ -8,7 +8,7 @@ const socketio = require('./sockets');
 require('dotenv').config({ path: './../.env' });
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'tempclient')));
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 socketio.socketServer(http);
 
