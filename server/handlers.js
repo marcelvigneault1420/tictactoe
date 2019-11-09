@@ -10,13 +10,15 @@ module.exports = function handlersMaker(socket) {
 
         let room = roomsUsers[socket.id];
 
+        waintingQueue = waintingQueue.filter(x => x.socket.id !== socket.id);
+
         if (room !== undefined) {
             if (room.user1.socket.id === socket.id) {
                 delete roomsUsers[room.user1.socket.id];
-                joinQueue(room.user2.socket.id);
+                joinQueue(room.user2.socket);
             } else if (room.user2.socket.id === socket.id) {
                 delete roomsUsers[room.user2.socket.id];
-                joinQueue(room.user1.socket.id);
+                joinQueue(room.user1.socket);
             }
         }
     };
@@ -32,20 +34,24 @@ module.exports = function handlersMaker(socket) {
     };
 
     const joinQueue = s => {
-        console.log('TEST');
-        delete roomsUsers[socket.id];
+        if (s.connected) {
+            delete roomsUsers[s.id];
 
-        var u = new User(socket);
-        if (waintingQueue.length === 0) {
-            console.log('CONNECT');
-            socket.emit('connected', true);
-            waintingQueue.push(u);
-        } else {
-            let u2 = waintingQueue.pop();
+            var u = new User(s);
+            if (waintingQueue.length === 0) {
+                s.emit('connected', true);
+                waintingQueue.push(u);
+            } else {
+                let u2 = waintingQueue.pop();
 
-            let r = new Room(u, u2);
-            roomsUsers[u.socket.id] = r;
-            roomsUsers[u2.socket.id] = r;
+                if (u2.socket.connected) {
+                    let r = new Room(u, u2);
+                    roomsUsers[u.socket.id] = r;
+                    roomsUsers[u2.socket.id] = r;
+                } else {
+                    joinQueue(s);
+                }
+            }
         }
     };
 

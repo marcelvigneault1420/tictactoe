@@ -9,9 +9,7 @@ var socketServer = server => {
     });
 
     io.on('connection', function(socket) {
-        console.log(
-            `CONNECTION. SocketID: ${socket.id}, name: ${socket.username}`
-        );
+        console.log(`CONNECTION. SocketID: ${socket.id}`);
 
         handlers = handlersMaker(socket);
 

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import React from 'react';
 import useTTT from '../hooks/useTictactoe';
 function Game() {
     const { play_turn, game } = useTTT('localhost:4001', 'Marcel Vigneault');
@@ -12,9 +11,9 @@ function Game() {
 
     return (
         <div>
-            {game.gameState == 0 && <p>Connecting...</p>}
-            {game.gameState == 1 && <p>Searching for a game...</p>}
-            {game.gameState == 2 && <p>{rows}</p>}
+            {game.gameState === 0 && <p>Connecting...</p>}
+            {game.gameState === 1 && <p>Searching for a game...</p>}
+            {game.gameState === 2 && <p>{rows}</p>}
         </div>
     );
 }

@@ -36,7 +36,7 @@ const useTicTacToe = (url, name) => {
             canceled = true;
             if (socket !== null) socket.disconnect();
         };
-    }, []);
+    }, [url, name]);
 
     function play_turn(tile) {
         if (game.socket !== null) {
