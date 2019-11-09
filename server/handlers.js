@@ -7,19 +7,27 @@ var roomsUsers = [];
 module.exports = function handlersMaker(socket) {
     const handleDisconnect = () => {
         console.log(`DISCONNECT. SocketID: ${socket.id}`);
+        abandonGame(socket.id);
+    };
 
-        let room = roomsUsers[socket.id];
+    const abandonGame = playerId => {
+        let room = roomsUsers[playerId];
 
-        waintingQueue = waintingQueue.filter(x => x.socket.id !== socket.id);
+        waintingQueue = waintingQueue.filter(x => x.socket.id !== playerId);
 
         if (room !== undefined) {
-            if (room.user1.socket.id === socket.id) {
-                delete roomsUsers[room.user1.socket.id];
-                joinQueue(room.user2.socket);
-            } else if (room.user2.socket.id === socket.id) {
-                delete roomsUsers[room.user2.socket.id];
-                joinQueue(room.user1.socket);
+            if (room.user1.socket.id === playerId) {
+                if (room.winner === 0) {
+                    room.winner = room.user2.type;
+                    room.user2.sendEnd(room.winner);
+                }
+            } else if (room.user2.socket.id === playerId) {
+                if (room.winner === 0) {
+                    room.winner = room.user1.type;
+                    room.user1.sendEnd(room.winner);
+                }
             }
+            delete roomsUsers[playerId];
         }
     };
 
@@ -39,7 +47,7 @@ module.exports = function handlersMaker(socket) {
 
     const joinQueue = s => {
         if (s.connected) {
-            delete roomsUsers[s.id];
+            abandonGame(s.id);
 
             let u = new User(s);
             if (waintingQueue.length === 0) {

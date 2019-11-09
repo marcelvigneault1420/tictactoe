@@ -2,7 +2,7 @@ module.exports = class Room {
     constructor(pUser1, pUser2) {
         this.user1 = pUser1;
         this.user2 = pUser2;
-
+        this.winner = 0;
         this.name = this.newGuid();
         this.setupGame();
     }
@@ -34,15 +34,15 @@ module.exports = class Room {
                 this.board[turn.tile] = uPlaying.type;
 
                 //Calculate tic tac toe
-                const winner = this.isTicTacToe();
+                this.winner = this.isTicTacToe();
 
                 uWaiting.sendMove(
                     { tile: turn.tile, type: uPlaying.type },
-                    winner
+                    this.winner
                 );
 
-                if (winner > 0) {
-                    uPlaying.sendEnd(winner);
+                if (this.winner > 0) {
+                    uPlaying.sendEnd(this.winner);
                 }
             }
         }
@@ -93,8 +93,11 @@ module.exports = class Room {
 
     setupGame() {
         this.board = ['', '', '', '', '', '', '', '', ''];
-        this.user1.initGame(this.user1, true, 1);
-        this.user2.initGame(this.user2, false, 2);
+
+        this.user1.type = 1;
+        this.user2.type = 2;
+        this.user1.initGame(this.user2, true);
+        this.user2.initGame(this.user1, false);
     }
 
     newGuid() {

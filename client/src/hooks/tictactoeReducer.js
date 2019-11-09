@@ -2,9 +2,10 @@ export const initialState = {
     socket: null,
     yourTurn: false,
     board: ['', '', '', '', '', '', '', '', ''],
-    type: '',
     gameState: 0,
-    winStatus: 0
+    winStatus: 0,
+    player: null,
+    rival: null
 };
 
 const reducer = (state, action) => {
@@ -15,19 +16,16 @@ const reducer = (state, action) => {
             return {
                 ...initialState,
                 gameState: 1,
-                winStatus: 0,
                 socket: action.payload
             };
         case 'JOIN_GAME':
             let { game, socket } = action.payload;
-
             return {
-                ...state,
+                ...initialState,
                 socket: socket,
                 yourTurn: game.yourTurn,
-                board: ['', '', '', '', '', '', '', '', ''],
-                type: game.type,
-                winStatus: 0,
+                player: game.player,
+                rival: game.rival,
                 gameState: 2
             };
         case 'GET_MOVE':
@@ -39,7 +37,7 @@ const reducer = (state, action) => {
                 winStatus: winStatus,
                 board: [
                     ...state.board.slice(0, move.tile),
-                    move.type === 1 ? 'X' : 'O',
+                    move.type,
                     ...state.board.slice(move.tile + 1)
                 ]
             };
@@ -50,7 +48,7 @@ const reducer = (state, action) => {
                     ...state,
                     board: [
                         ...state.board.slice(0, tile),
-                        state.type === 1 ? 'X' : 'O',
+                        state.player.type,
                         ...state.board.slice(tile + 1)
                     ],
                     yourTurn: false
@@ -60,18 +58,10 @@ const reducer = (state, action) => {
             }
         case 'SET_WINNER':
             const winner = action.payload;
-            let ws = 0;
-            if (winner === state.type) {
-                ws = 1;
-            } else if (winner === 3) {
-                ws = 3;
-            } else {
-                ws = 2;
-            }
 
             return {
                 ...state,
-                winStatus: ws
+                winStatus: winner.winStatus
             };
         default:
             return state;

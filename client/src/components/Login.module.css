@@ -1,0 +1,36 @@
+.nameInput {
+    background-color: white;
+    padding: 0.5em 1em;
+    font-size: 1.5em;
+    outline: none;
+    transition-duration: 0.3s;
+    color: #764ba2;
+}
+
+.nameInput:focus {
+    box-shadow: 6px 6px 1px 1px #666;
+    transform: translateY(-4px);
+}
+
+.error {
+    padding-top: 0.5em;
+}
+
+.buttonInput {
+    margin-left: 20px;
+    background-color: white;
+    padding: 0.4em 0.9em;
+    font-size: 1.5em;
+    transition-duration: 0.3s;
+    border: 0.1em solid white;
+    outline: none;
+    color: #764ba2;
+}
+
+.buttonInput:hover,
+.buttonInput:focus {
+    background-color: transparent;
+    box-shadow: 6px 6px 1px 1px #666;
+    transform: translateY(-4px);
+    color: white;
+}

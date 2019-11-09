@@ -6,7 +6,6 @@ const useTicTacToe = (url, name) => {
     const [game, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
-        console.log('INIT REDUCER');
         let canceled = false;
         let socket = null;
 
@@ -64,7 +63,7 @@ const useTicTacToe = (url, name) => {
 
     function playTurnHandler(tile) {
         if (game.socket !== null) {
-            game.socket.emit('play_turn', { tile, type: game.type });
+            game.socket.emit('play_turn', { tile, type: game.player.type });
             dispatch({ type: 'PLAY_TURN', payload: tile });
         }
     }

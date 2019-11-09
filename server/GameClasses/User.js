@@ -4,15 +4,13 @@ module.exports = class User {
         this.name = pSocket.username;
     }
 
-    initGame(pRival, pYourTurn, pType) {
+    initGame(pRival, pYourTurn) {
         this.rival = pRival;
         this.yourTurn = pYourTurn;
-        this.type = pType;
-
         this.socket.emit('game_found', {
-            type: this.type,
+            player: { name: this.name, type: this.type },
             yourTurn: this.yourTurn,
-            rival: this.rival.name
+            rival: { name: this.rival.name, type: this.rival.type }
         });
     }
 
