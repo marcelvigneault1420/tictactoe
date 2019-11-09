@@ -1,6 +1,6 @@
-var io = require('socket.io')();
-var handlersMaker = require('./handlers');
-var socketServer = server => {
+const io = require('socket.io')();
+const handlersMaker = require('./handlers');
+const socketServer = server => {
     io.attach(server);
 
     io.use(function(socket, next) {
@@ -10,11 +10,11 @@ var socketServer = server => {
 
     io.on('connection', function(socket) {
         console.log(`CONNECTION. SocketID: ${socket.id}`);
-
         handlers = handlersMaker(socket);
 
         socket.on('play_turn', handlers.handlePlayTurn);
         socket.on('disconnect', handlers.handleDisconnect);
+        socket.on('queue_again', handlers.handleQueueAgain);
 
         handlers.handlePlayerJoinQueue(socket.username);
     });

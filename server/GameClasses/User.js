@@ -1,33 +1,31 @@
 module.exports = class User {
-    constructor(pSocket, pName) {
+    constructor(pSocket) {
         this.socket = pSocket;
-        this.name = pName;
-        this.score = 0;
+        this.name = pSocket.username;
     }
 
-    initGame(pRival, pYourTurn, pType, pPlayMoveEvent) {
+    initGame(pRival, pYourTurn, pType) {
         this.rival = pRival;
         this.yourTurn = pYourTurn;
         this.type = pType;
-        this.playMoveEvent = pPlayMoveEvent;
 
         this.socket.emit('game_found', {
-            board: ['', '', '', '', '', '', '', '', ''],
             type: this.type,
             yourTurn: this.yourTurn,
-            rival: { name: this.rival.name, score: this.rival.score }
+            rival: this.rival.name
         });
     }
 
-    playMove() {
-        this.playMoveEvent(move, this.type);
+    sendMove(move, winStatus) {
+        this.socket.emit('send_move', {
+            move,
+            winStatus: winStatus
+        });
     }
 
-    sendGameInfo(board, winStatus) {
-        this.socket.emit('refresh', {
-            board,
-            winStatus: winStatus,
-            yourTurn: this.yourTurn
+    sendEnd(winStatus) {
+        this.socket.emit('send_winner', {
+            winStatus: winStatus
         });
     }
 };

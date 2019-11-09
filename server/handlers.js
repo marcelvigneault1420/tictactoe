@@ -1,5 +1,5 @@
-var Room = require('./GameClasses/Room');
-var User = require('./GameClasses/User');
+const Room = require('./GameClasses/Room');
+const User = require('./GameClasses/User');
 
 var waintingQueue = [];
 var roomsUsers = [];
@@ -23,6 +23,10 @@ module.exports = function handlersMaker(socket) {
         }
     };
 
+    const handleQueueAgain = () => {
+        joinQueue(socket);
+    };
+
     const handlePlayTurn = turn => {
         let r = roomsUsers[socket.id];
 
@@ -37,15 +41,15 @@ module.exports = function handlersMaker(socket) {
         if (s.connected) {
             delete roomsUsers[s.id];
 
-            var u = new User(s);
+            let u = new User(s);
             if (waintingQueue.length === 0) {
-                s.emit('connected', true);
+                s.emit('in_queue', true);
                 waintingQueue.push(u);
             } else {
                 let u2 = waintingQueue.pop();
 
                 if (u2.socket.connected) {
-                    let r = new Room(u, u2);
+                    let r = new Room(u2, u);
                     roomsUsers[u.socket.id] = r;
                     roomsUsers[u2.socket.id] = r;
                 } else {
@@ -59,5 +63,10 @@ module.exports = function handlersMaker(socket) {
         joinQueue(socket);
     };
 
-    return { handleDisconnect, handlePlayTurn, handlePlayerJoinQueue };
+    return {
+        handleDisconnect,
+        handlePlayTurn,
+        handlePlayerJoinQueue,
+        handleQueueAgain
+    };
 };
