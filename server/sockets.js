@@ -3,6 +3,7 @@ const handlersMaker = require('./handlers');
 const socketServer = server => {
     io.attach(server);
 
+    //io.set('origins','*:*');
     io.use(function(socket, next) {
         socket.username = socket.request._query['name'];
         next();
